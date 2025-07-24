@@ -127,3 +127,9 @@ Feel free to fork this repository, make improvements, and submit pull requests. 
 License
 
 This project is open-source. See the LICENSE file for details (if applicable).
+
+After cloning the repo, run:
+cd backend
+npm install
+cd ../frontend
+npm install
