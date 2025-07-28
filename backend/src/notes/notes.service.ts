@@ -62,6 +62,19 @@ export class NotesService {
     return null;
   }
 
+  async updateNote(id: number, updateNoteDto: any) {
+    const note = await this.notesRepository.findOneBy({ id });
+    if (note) {
+      note.title = updateNoteDto.title || note.title;
+      note.content = updateNoteDto.content || note.content;
+      if (updateNoteDto.tags && Array.isArray(updateNoteDto.tags)) {
+        note.tags = updateNoteDto.tags.map((tag: string) => ({ name: tag }));
+      }
+      return this.notesRepository.save(note);
+    }
+    return null;
+  }
+
   removeArchivedNote(id: number) {
     return this.notesRepository.delete({ id, archived: true });
   }

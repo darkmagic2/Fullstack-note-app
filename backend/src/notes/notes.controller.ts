@@ -43,6 +43,11 @@ export class NotesController {
     return this.notesService.unarchiveNote(+id);
   }
 
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateNoteDto: any) {
+    return this.notesService.updateNote(+id, updateNoteDto);
+  }
+
   @Delete(':id/archived')
   removeArchived(@Param('id') id: string) {
     return this.notesService.removeArchivedNote(+id);
