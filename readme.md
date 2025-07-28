@@ -90,7 +90,5 @@ git push origin main
 Contributing
 Feel free to fork this repository, make improvements, and submit pull requests. Issues and feature requests are welcome!
 License
-[Add your license here, e.g., MIT] - Update this section if you have a specific license.
-Acknowledgments
 
-Built with guidance from xAI's Grok 3.
+
