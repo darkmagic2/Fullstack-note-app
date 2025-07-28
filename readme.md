@@ -1,6 +1,12 @@
 Fullstack Note App
 A fullstack web application built with NestJS (backend), React (frontend), and PostgreSQL (database) to manage notes with tagging and archiving features.
+Prerequisites for Users
 
+    Ensure users have:
+        Node.js and npm installed (sudo apt install nodejs npm on Debian-based Linux).
+        PostgreSQL running with the correct .env settings.
+    The script assumes the project structure (backend/, frontend/) is intact.
+    
 Features
 
 Add Notes: Create notes with titles, content, and optional tags.
@@ -65,6 +71,7 @@ Start the frontend (with Tailwind watch):cd ../frontend
 npm start
 
 Or use the provided ./run.sh script if configured.
+
 
 Access the App:
 
