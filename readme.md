@@ -1,12 +1,5 @@
 Fullstack Note App
 A fullstack web application built with NestJS (backend), React (frontend), and PostgreSQL (database) to manage notes with tagging and archiving features.
-Prerequisites for Users
-
-    Ensure users have:
-        Node.js and npm installed (sudo apt install nodejs npm on Debian-based Linux).
-        PostgreSQL running with the correct .env settings.
-    The script assumes the project structure (backend/, frontend/) is intact.
-    
 Features
 
 Add Notes: Create notes with titles, content, and optional tags.
@@ -26,10 +19,26 @@ Database: PostgreSQL for persistent storage.
 Version Control: Git and GitHub for source code management.
 
 Prerequisites
+The following runtimes, engines, and tools are required to run the application, with their specific versions:
 
-Node.js and npm installed.
-PostgreSQL installed and running.
-Git installed for version control.
+Node.js: v18.17.0  
+Used for running both backend (NestJS) and frontend (React) applications.
+
+npm: v9.6.7  
+Package manager for installing dependencies (aligned with Node.js 18.17.0).
+
+PostgreSQL: v15.4  
+Database engine for storing notes (ensure the note_app database is created).
+
+Git: v2.39.2  
+Version control for cloning and managing the repository.
+
+Notes
+
+Versions listed are the minimum recommended. Check package.json in the backend and frontend directories for exact dependency versions.
+Install Node.js and npm from nodejs.org or via package managers (e.g., sudo apt install nodejs npm on Debian-based Linux).
+Install PostgreSQL from postgresql.org or via package managers (e.g., sudo apt install postgresql on Linux).
+Install Git from git-scm.com or via package managers (e.g., sudo apt install git on Linux).
 
 Installation
 
@@ -45,7 +54,7 @@ DB_NAME=note_app
 DB_USER=postgres
 DB_PASSWORD=your_password
 
-Update DB_PASSWORD with your PostgreSQL password.
+Update DB_PASSWORD with your PostgreSQL password. The run-linux.sh or run-windows.bat script will create this file with defaults if it’s missing.
 
 Install Dependencies:
 
@@ -70,13 +79,23 @@ npm start
 Start the frontend (with Tailwind watch):cd ../frontend
 npm start
 
-Or use the provided scripts according to your OS.
-
+Or use the provided scripts for automation (see below).
 
 Access the App:
 
 Open http://localhost:3000 in your browser.
 
+Running the App
+Use the appropriate script based on your operating system to automate the build, startup process, and configuration:
+
+Linux:
+chmod +x run-linux.sh
+./run-linux.sh
+
+Windows:
+run-windows.bat
+
+Both scripts build the backend, start it, launch the frontend, and create a .env file in the backend directory if it doesn’t exist (with default values). Update the DB_PASSWORD in .env with your PostgreSQL password. Open http://localhost:3000 to use the app. Ensure Node.js, npm, and PostgreSQL are installed and running with the specified versions.
 Usage
 
 Add a note by filling out the form and submitting.
@@ -93,9 +112,3 @@ Commit and push changes to GitHub:git add .
 git commit -m "Describe your changes"
 git pull origin main
 git push origin main
-
-Contributing
-Feel free to fork this repository, make improvements, and submit pull requests. Issues and feature requests are welcome!
-License
-
-
