@@ -2,91 +2,75 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Note } from './note.entity';
-import { CreateNoteDto } from './dto/create-note-dto';
-import { Tag } from './entities/tag.entity';
 
 @Injectable()
 export class NotesService {
   constructor(
     @InjectRepository(Note)
-    private noteRepository: Repository<Note>,
-    @InjectRepository(Tag)
-    private tagRepository: Repository<Tag>,
+    private notesRepository: Repository<Note>,
   ) {}
 
-  async create(createNoteDto: CreateNoteDto): Promise<Note> {
-    const note = this.noteRepository.create({
-      ...createNoteDto,
-      createdAt: new Date(),
+  findAll() {
+    return this.notesRepository.findBy({ archived: false });
+  }
+
+  findByTag(tag: string) {
+    console.log(`Querying for tag: ${tag}`);
+    const query = this.notesRepository
+      .createQueryBuilder('note')
+      .where('note.tags @> :tag', { tag: `[{"name": "${tag}"}]` })
+      .andWhere('note.archived = :archived', { archived: false });
+    console.log(`Generated SQL:`, query.getSql());
+    return query.getMany().then((results) => {
+      console.log(`Results for tag ${tag}:`, results);
+      return results;
     });
-    return this.noteRepository.save(note);
   }
 
-  async findAll(): Promise<Note[]> {
-    return this.noteRepository.find({ relations: ['tags'] });
+  async create(createNoteDto: any) {
+    const note = this.notesRepository.create(createNoteDto);
+    return this.notesRepository.save(note);
   }
 
-  async findOne(id: number): Promise<Note> {
-    const note = await this.noteRepository.findOne({
-      where: { id },
-      relations: ['tags'],
-    });
-    if (!note) {
-      throw new Error(`Note with ID ${id} not found`);
+  async updateTags(id: number, tagName: string) {
+    const note = await this.notesRepository.findOneBy({ id });
+    if (note) {
+      if (!note.tags) note.tags = [];
+      if (!note.tags.some((t) => t.name === tagName)) {
+        note.tags.push({ name: tagName });
+      }
+      return this.notesRepository.save(note);
     }
-    return note;
+    return null;
   }
 
-  async update(id: number, updateNoteDto: any): Promise<Note> {
-    const note = await this.noteRepository.preload({
-      id,
-      ...updateNoteDto,
-    });
-    if (!note) {
-      throw new Error(`Note with ID ${id} not found`);
+  async archiveNote(id: number) {
+    const note = await this.notesRepository.findOneBy({ id });
+    if (note) {
+      note.archived = true;
+      return this.notesRepository.save(note);
     }
-    return this.noteRepository.save(note);
+    return null;
   }
 
-  async remove(id: number): Promise<void> {
-    const result = await this.noteRepository.delete(id);
-    if (result.affected === 0) {
-      throw new Error(`Note with ID ${id} not found`);
+  async unarchiveNote(id: number) {
+    const note = await this.notesRepository.findOneBy({ id });
+    if (note) {
+      note.archived = false;
+      return this.notesRepository.save(note);
     }
+    return null;
   }
 
-  async addTagToNote(noteId: number, tagName: string): Promise<Note> {
-    const note = await this.noteRepository.findOne({
-      where: { id: noteId },
-      relations: ['tags'],
-    });
-    if (!note) {
-      throw new Error(`Note with ID ${noteId} not found`);
-    }
-    let tag = await this.tagRepository.findOne({ where: { name: tagName } });
-    if (!tag) {
-      tag = this.tagRepository.create({ name: tagName });
-      await this.tagRepository.save(tag);
-    }
-    note.tags = note.tags || [];
-    if (!note.tags.some((t) => t.name === tagName)) {
-      note.tags.push(tag);
-      return this.noteRepository.save(note);
-    }
-    return note;
+  removeArchivedNote(id: number) {
+    return this.notesRepository.delete({ id, archived: true });
   }
 
-  async findByTag(tagName: string): Promise<Note[]> {
-    const tag = await this.tagRepository.findOne({
-      where: { name: tagName },
-      relations: ['notes'],
-    });
-    if (!tag) {
-      return [];
-    }
-    return tag.notes.map((note) => ({
-      ...note,
-      tags: note.tags || [], // Ensure tags is always an array
-    }));
+  findArchived() {
+    return this.notesRepository.findBy({ archived: true });
+  }
+
+  remove(id: number) {
+    return this.notesRepository.delete(id);
   }
 }

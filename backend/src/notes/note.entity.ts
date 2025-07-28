@@ -1,28 +1,22 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToMany,
-  JoinTable,
-} from 'typeorm';
-import { Tag } from './entities/tag.entity';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-// Defining the Note entity for the database
 @Entity()
 export class Note {
-  @PrimaryGeneratedColumn() // Automatically generates a unique ID for each note
+  @PrimaryGeneratedColumn()
   id: number;
 
-  @Column() // Stores the title of the note
+  @Column()
   title: string;
 
-  @Column() // Stores the content of the note
+  @Column({ type: 'text', nullable: true })
   content: string;
 
-  @Column({ nullable: true }) // Stores the creation date, can be null
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @ManyToMany(() => Tag, (tag) => tag.notes) // Defines a many-to-many relationship with Tag
-  @JoinTable() // Manages the junction table for the relationship
-  tags: Tag[]; // Array of associated tags
+  @Column({ type: 'jsonb', default: '[]' })
+  tags: any[];
+
+  @Column({ default: false })
+  archived: boolean;
 }

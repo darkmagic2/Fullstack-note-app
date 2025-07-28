@@ -5,6 +5,7 @@ import NoteForm from "./components/NoteForm";
 function App() {
   const [notes, setNotes] = useState([]);
   const [filterTag, setFilterTag] = useState("");
+  const [showArchived, setShowArchived] = useState(false);
   const [allTags, setAllTags] = useState([]);
   const fetchAllTagsRef = useRef(null);
 
@@ -12,13 +13,15 @@ function App() {
     try {
       const url = filterTag
         ? `http://localhost:3001/notes/tag/${filterTag}`
-        : "http://localhost:3001/notes";
+        : showArchived
+        ? `http://localhost:3001/notes/archived`
+        : `http://localhost:3001/notes`;
       const response = await axios.get(url);
       setNotes(response.data);
     } catch (error) {
       console.error("Error fetching notes:", error);
     }
-  }, [filterTag]);
+  }, [filterTag, showArchived]);
 
   const fetchAllTags = useCallback(async () => {
     try {
@@ -34,11 +37,33 @@ function App() {
     }
   }, []);
 
+  const archiveNote = async (id) => {
+    try {
+      setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
+      await axios.patch(`http://localhost:3001/notes/${id}/archive`);
+      await fetchAllTags();
+    } catch (error) {
+      console.error("Error archiving note:", error);
+      fetchNotes();
+    }
+  };
+
+  const unarchiveNote = async (id) => {
+    try {
+      await axios.patch(`http://localhost:3001/notes/${id}/unarchive`);
+      if (showArchived) fetchNotes();
+      await fetchAllTags();
+    } catch (error) {
+      console.error("Error unarchiving note:", error);
+      fetchNotes();
+    }
+  };
+
   const deleteNote = async (id) => {
     try {
       await axios.delete(`http://localhost:3001/notes/${id}`);
-      setNotes(notes.filter((note) => note.id !== id)); // Update state to remove the deleted note
-      await fetchAllTags(); // Refresh tags after deletion
+      setNotes(notes.filter((note) => note.id !== id));
+      await fetchAllTags();
     } catch (error) {
       console.error("Error deleting note:", error);
     }
@@ -46,12 +71,15 @@ function App() {
 
   useEffect(() => {
     fetchNotes();
-    fetchAllTags();
-  }, [fetchNotes, fetchAllTags]);
+  }, [fetchNotes, showArchived]);
 
   useEffect(() => {
     fetchAllTagsRef.current = fetchAllTags;
   }, [fetchAllTags]);
+
+  const handleNoteAdded = () => {
+    window.location.reload(); // Refresh the page after adding a note
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
@@ -59,7 +87,10 @@ function App() {
         <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
           Note App
         </h1>
-        <NoteForm fetchAllTags={fetchAllTagsRef.current} />
+        <NoteForm
+          fetchAllTags={fetchAllTagsRef.current}
+          onNoteAdded={handleNoteAdded}
+        />
         <div className="flex space-x-4 mb-6">
           <select
             value={filterTag}
@@ -79,12 +110,18 @@ function App() {
           >
             Filter
           </button>
+          <button
+            onClick={() => setShowArchived(!showArchived)}
+            className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition duration-200"
+          >
+            {showArchived ? "Show Active" : "Show Archived"}
+          </button>
         </div>
         <ul className="space-y-4">
           {notes.map((note) => (
             <li
               key={note.id}
-              className="bg-gray-50 p-4 rounded-md border border-gray-200 hover:bg-gray-100 transition duration-200 flex justify-between items-center"
+              className="bg-gray-50 p-4 rounded-md border border-gray-200 hover:bg-gray-100 transition duration-200 flex justify-between items-center gap-2"
             >
               <div>
                 <div className="text-lg font-medium text-gray-700">
@@ -97,12 +134,30 @@ function App() {
                     : ""}
                 </div>
               </div>
-              <button
-                onClick={() => deleteNote(note.id)}
-                className="bg-gray-400 text-white px-2 py-1 rounded-md hover:bg-red-400 transition duration-200 mt-2"
-              >
-                Delete
-              </button>
+              <div className="flex space-x-2">
+                {!note.archived && (
+                  <button
+                    onClick={() => archiveNote(note.id)}
+                    className="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 transition duration-200 text-sm"
+                  >
+                    Archive
+                  </button>
+                )}
+                {note.archived && (
+                  <button
+                    onClick={() => unarchiveNote(note.id)}
+                    className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 transition duration-200 text-sm"
+                  >
+                    Unarchive
+                  </button>
+                )}
+                <button
+                  onClick={() => deleteNote(note.id)}
+                  className="bg-red-300 text-white px-3 py-1 rounded-md hover:bg-red-400 transition duration-200 mt-2 text-sm"
+                >
+                  Delete
+                </button>
+              </div>
             </li>
           ))}
         </ul>
