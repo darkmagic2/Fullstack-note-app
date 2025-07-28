@@ -70,7 +70,7 @@ npm start
 Start the frontend (with Tailwind watch):cd ../frontend
 npm start
 
-Or use the provided ./run.sh script if configured.
+Or use the provided scripts according to your OS.
 
 
 Access the App:
