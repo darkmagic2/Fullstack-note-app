@@ -1,5 +1,6 @@
 Fullstack Note App
 A fullstack web application built with NestJS (backend), React (frontend), and PostgreSQL (database) to manage notes with tagging and archiving features.
+
 Features
 
 Add Notes: Create notes with titles, content, and optional tags.
