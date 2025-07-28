@@ -1,135 +1,95 @@
-Note App
-
-A simple note-taking application built with React for the frontend, Node.js/Express for the backend, and styled with Tailwind CSS. Users can create notes, add tags, and filter notes by tags.
-
+Fullstack Note App
+A fullstack web application built with NestJS (backend), React (frontend), and PostgreSQL (database) to manage notes with tagging and archiving features.
 Features
 
-Add new notes with a title, content, and optional tag.
+Add Notes: Create notes with titles, content, and optional tags.
+View Notes: Display all active notes or filter by tags.
+Archive Notes: Archive notes to hide them from the active list, with an option to view archived notes.
+Unarchive Notes: Restore archived notes to the active list.
+Delete Notes: Permanently remove notes.
+Tag Filtering: Filter notes by specific tags (e.g., "work", "personal").
+Page Refresh: The page refreshes automatically after adding a new note.
+Responsive Design: Styled with Tailwind CSS for a clean, mobile-friendly interface.
 
-View all notes with their associated tags.
+Technologies Used
 
-Filter notes by tag.
-
-Modern, responsive UI with Tailwind CSS styling.
+Backend: NestJS with TypeScript, TypeORM for database interaction.
+Frontend: React with JSX, Axios for API calls, Tailwind CSS for styling.
+Database: PostgreSQL for persistent storage.
+Version Control: Git and GitHub for source code management.
 
 Prerequisites
 
-Node.js (v14.x or later recommended)
-
-npm (comes with Node.js)
-
-Note: No database (e.g., PostgreSQL) is required to run the app in its current form. Data is stored in-memory and will reset on server restart. For persistent storage, see the "Optional Database Setup" section below.
+Node.js and npm installed.
+PostgreSQL installed and running.
+Git installed for version control.
 
 Installation
 
-Backend Setup
+Clone the Repository:
+git clone https://github.com/darkmagic2/Fullstack-note-app.git
+cd Fullstack-note-app
 
-Navigate to the backend directory:
+Set Up Environment:
 
-cd backend
+Create a .env file in the backend directory with:DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=note_app
+DB_USER=postgres
+DB_PASSWORD=your_password
 
-Install dependencies:
+Update DB_PASSWORD with your PostgreSQL password.
 
+Install Dependencies:
+
+Backend:cd backend
 npm install
 
-Start the backend server:
-
-npm start
-
-The server will run on http://localhost:3001.
-
-Frontend Setup
-
-Navigate to the frontend directory:
-
-cd frontend
-
-Install dependencies:
-
+Frontend:cd ../frontend
 npm install
 
-Start the frontend development server:
+Set Up Database:
 
+Create the note_app database in PostgreSQL:CREATE DATABASE note_app;
+
+The app will auto-create the notes table on startup with synchronize: true.
+
+Run the Application:
+
+Build and start the backend:cd backend
+npm run build
 npm start
 
-The app will open in your browser at http://localhost:3000.
+Start the frontend (with Tailwind watch):cd ../frontend
+npm start
 
-Using the Provided Script
+Or use the provided ./run.sh script if configured.
 
-Alternatively, run the project with a single command from the root note-app directory:
-
-./run.sh
-
-This script starts both the backend and frontend concurrently.
-
-Optional Database Setup
-
-The current version uses an in-memory data store, meaning data is lost when the server restarts. To add persistent storage with PostgreSQL:
-
-Install PostgreSQL on your system.
-
-Configure the backend to connect to PostgreSQL (e.g., update backend/index.js with a database client like pg and connection details).
-
-Update the API routes to interact with the database instead of in-memory storage.
-
-Note: This step is optional and not required for basic usage. See the "Contributing" section for help with implementation.
-
-Usage
+Access the App:
 
 Open http://localhost:3000 in your browser.
 
-Use the form to add a new note:
+Usage
 
-Enter a title and content.
+Add a note by filling out the form and submitting.
+Use the tag dropdown to filter notes by tag.
+Archive a note with the "Archive" button; view archived notes with the "Show Archived" toggle.
+Unarchive a note with the "Unarchive" button.
+Delete notes permanently with the "Delete" button.
+The page refreshes after adding a new note.
 
-Optionally add a tag (e.g., "work", "personal").
+Development
 
-Click "Add Note" to save.
-
-View all notes in the list below the form.
-
-Use the dropdown to select a tag and click "Filter" to see notes with that tag.
-
-Notes are styled with a modern design, including hover effects and responsive layout.
-
-Project Structure
-
-backend/: Contains the Express server and API routes.
-
-frontend/: Contains the React application.
-
-src/: Source code for React components.
-
-src/index.css: Tailwind CSS configuration file.
-
-src/App.js: Main React component.
-
-src/components/NoteForm.js: Component for adding notes.
-
-Dependencies
-
-Frontend: React, React DOM, Axios, Tailwind CSS, CRACO.
-
-Backend: Express, Axios.
-
-Troubleshooting
-
-Blank Screen: Ensure both backend and frontend are running. Check the console (F12) for errors.
-
-Styling Issues: Verify index.css is imported in index.js and Tailwind is configured via craco.config.js.
-
-API Errors: Ensure the backend is running on http://localhost:3001.
+Make changes in the backend/src and frontend/src directories.
+Commit and push changes to GitHub:git add .
+git commit -m "Describe your changes"
+git pull origin main
+git push origin main
 
 Contributing
-
-Feel free to fork this repository, make improvements, and submit pull requests. Issues and feature requests are welcome! For adding PostgreSQL or other enhancements, please open an issue or pull request with details.
-
+Feel free to fork this repository, make improvements, and submit pull requests. Issues and feature requests are welcome!
 License
+[Add your license here, e.g., MIT] - Update this section if you have a specific license.
+Acknowledgments
 
-This project is open-source. See the LICENSE file for details (if applicable).
-
-After cloning the repo, run:
-cd backend
-npm install
-cd ../frontend
-npm install
+Built with guidance from xAI's Grok 3.
