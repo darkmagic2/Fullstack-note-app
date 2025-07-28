@@ -7,6 +7,7 @@ function App() {
   const [filterTag, setFilterTag] = useState("");
   const [showArchived, setShowArchived] = useState(false);
   const [allTags, setAllTags] = useState([]);
+  const [editingNote, setEditingNote] = useState(null);
   const fetchAllTagsRef = useRef(null);
 
   const fetchNotes = useCallback(async () => {
@@ -69,6 +70,17 @@ function App() {
     }
   };
 
+  const updateNote = async (id, updatedNote) => {
+    try {
+      await axios.patch(`http://localhost:3001/notes/${id}`, updatedNote);
+      setEditingNote(null);
+      fetchNotes();
+      await fetchAllTags();
+    } catch (error) {
+      console.error("Error updating note:", error);
+    }
+  };
+
   useEffect(() => {
     fetchNotes();
   }, [fetchNotes, showArchived]);
@@ -78,7 +90,7 @@ function App() {
   }, [fetchAllTags]);
 
   const handleNoteAdded = () => {
-    window.location.reload(); // Refresh the page after adding a note
+    window.location.reload();
   };
 
   return (
@@ -90,6 +102,8 @@ function App() {
         <NoteForm
           fetchAllTags={fetchAllTagsRef.current}
           onNoteAdded={handleNoteAdded}
+          editingNote={editingNote}
+          onUpdateNote={updateNote}
         />
         <div className="flex space-x-4 mb-6">
           <select
@@ -156,6 +170,12 @@ function App() {
                   className="bg-red-300 text-white px-3 py-1 rounded-md hover:bg-red-400 transition duration-200 mt-2 text-sm"
                 >
                   Delete
+                </button>
+                <button
+                  onClick={() => setEditingNote(note)}
+                  className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 transition duration-200 text-sm"
+                >
+                  Edit
                 </button>
               </div>
             </li>

@@ -1,5 +1,5 @@
 Fullstack Note App
-A fullstack web application built with NestJS (backend), React (frontend), and PostgreSQL (database) to manage notes with tagging and archiving features.
+A fullstack web application built with NestJS (backend), React (frontend), and PostgreSQL (database) to manage notes with tagging, archiving, and editing features.
 Features
 
 Add Notes: Create notes with titles, content, and optional tags.
@@ -7,6 +7,7 @@ View Notes: Display all active notes or filter by tags.
 Archive Notes: Archive notes to hide them from the active list, with an option to view archived notes.
 Unarchive Notes: Restore archived notes to the active list.
 Delete Notes: Permanently remove notes.
+Edit Notes: Edit existing notes, including title, content, and tags.
 Tag Filtering: Filter notes by specific tags (e.g., "work", "personal").
 Page Refresh: The page refreshes automatically after adding a new note.
 Responsive Design: Styled with Tailwind CSS for a clean, mobile-friendly interface.
@@ -103,6 +104,7 @@ Use the tag dropdown to filter notes by tag.
 Archive a note with the "Archive" button; view archived notes with the "Show Archived" toggle.
 Unarchive a note with the "Unarchive" button.
 Delete notes permanently with the "Delete" button.
+Edit a note by clicking the "Edit" button, modify the fields, and click "Update Note" to save changes.
 The page refreshes after adding a new note.
 
 Development

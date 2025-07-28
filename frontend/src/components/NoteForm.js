@@ -1,26 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-function NoteForm({ fetchAllTags, onNoteAdded }) {
+function NoteForm({ fetchAllTags, onNoteAdded, editingNote, onUpdateNote }) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tag, setTag] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post("http://localhost:3001/notes", {
-        title,
-        content,
-        tags: tag ? [{ name: tag }] : [],
-      });
+  useEffect(() => {
+    if (editingNote) {
+      setTitle(editingNote.title || "");
+      setContent(editingNote.content || "");
+      setTag(
+        editingNote.tags && editingNote.tags.length > 0
+          ? editingNote.tags[0].name
+          : ""
+      );
+    } else {
       setTitle("");
       setContent("");
       setTag("");
-      if (fetchAllTags) fetchAllTags();
-      if (onNoteAdded) onNoteAdded(); // Trigger page refresh
+    }
+  }, [editingNote]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const noteData = { title, content, tags: tag ? [tag] : [] };
+      if (editingNote) {
+        await onUpdateNote(editingNote.id, noteData);
+      } else {
+        await axios.post("http://localhost:3001/notes", noteData);
+        if (onNoteAdded) onNoteAdded();
+      }
     } catch (error) {
-      console.error("Error adding note:", error);
+      console.error("Error adding/updating note:", error);
     }
   };
 
@@ -52,7 +65,7 @@ function NoteForm({ fetchAllTags, onNoteAdded }) {
         type="submit"
         className="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200"
       >
-        Add Note
+        {editingNote ? "Update Note" : "Add Note"}
       </button>
     </form>
   );
